@@ -1,39 +1,37 @@
-import os
-from selene import browser, be, have
+from qa_guru_python_8_10.pages.registration_page import RegistrationPage
+
+registration_page = RegistrationPage()
 
 
 def test_student_registration_form():
-    browser.open("/automation-practice-form")
-    browser.element("#firstName").should(be.visible).type("Vasya")
-    browser.element("#lastName").should(be.visible).type("Vasilyev")
-    browser.element("#userEmail").should(be.visible).type("example@example.com")
-    browser.element("[for='gender-radio-1']").should(be.visible).click()
-    browser.element("#userNumber").should(be.visible).type("7999999999")
-    browser.element("#dateOfBirthInput").should(be.visible).click()
-    browser.element(".react-datepicker__month-select").should(be.visible).click()
-    browser.element(".react-datepicker__month-select > option:nth-child(5)").should(be.visible).click()
-    browser.element(".react-datepicker__year-select").should(be.visible).click()
-    browser.element(".react-datepicker__year-select > option:nth-child(20)").should(be.visible).click()
-    browser.element(".react-datepicker__day.react-datepicker__day--012").should(be.visible).click()
-    browser.element("#subjectsInput").should(be.visible).type("Computer Science").press_enter()
-    browser.element("label[for='hobbies-checkbox-1']").should(be.visible).click()
-    browser.element("label[for='hobbies-checkbox-2']").should(be.visible).click()
-    browser.element("label[for='hobbies-checkbox-3']").should(be.visible).click()
-    browser.element("#uploadPicture").should(be.visible).type(os.path.abspath("pictures/avatar.png"))
-    browser.element("#currentAddress").should(be.visible).type("Palace Square, 2, St Petersburg, 190000")
-    browser.element("#react-select-3-input").should(be.visible).type("NCR").press_enter()
-    browser.element("#react-select-4-input").should(be.visible).type("Delhi").press_enter()
-    browser.element("#submit").should(be.visible).click()
-    browser.all(".table-dark>tbody>tr>td:nth-child(2)").should(have.texts(
-        "Vasya Vasilyev",
-        "example@example.com",
-        "Male",
-        "7999999999",
-        "12 May,1919",
-        "Computer Science",
-        "Sports, Reading, Music",
-        "avatar.png",
-        "Palace Square, 2, St Petersburg, 190000",
-        "NCR Delhi"
-    ))
-    browser.element("#closeLargeModal").should(be.visible).click()
+    # GIVEN
+    registration_page.open()
+
+    # WHEN
+    registration_page.fill_first_name('Vasya')
+    registration_page.fill_last_name('Vasilyev')
+    registration_page.fill_email('example@example.com')
+    registration_page.choose_a_gender()
+    registration_page.fill_telephone_number('7999999999')
+    registration_page.choose_date_of_birth(month='5', year='20', day='012')
+    registration_page.choose_a_subject('Computer Science')
+    registration_page.choose_a_hobby()
+    registration_page.upload_a_picture('avatar.png')
+    registration_page.type_current_address('Palace Square, 2, St Petersburg, 190000')
+    registration_page.choose_state('NCR')
+    registration_page.choose_city('Delhi')
+    registration_page.submit_form()
+
+    # THEN
+    registration_page.student_should_by_registred(
+        'Vasya Vasilyev',
+        'example@example.com',
+        'Male',
+        '7999999999',
+        '12 May,1919',
+        'Computer Science',
+        'Sports, Reading, Music',
+        'avatar.png',
+        'Palace Square, 2, St Petersburg, 190000',
+        'NCR Delhi'
+    )
